@@ -60,7 +60,6 @@ import { RenderAgentStateMessage as DefaultRenderAgentStateMessage } from "./mes
 import { RenderImageMessage as DefaultRenderImageMessage } from "./messages/RenderImageMessage";
 import { AssistantMessage as DefaultAssistantMessage } from "./messages/AssistantMessage";
 import { UserMessage as DefaultUserMessage } from "./messages/UserMessage";
-import { Suggestion } from "./Suggestion";
 import React, { useEffect, useRef, useState } from "react";
 import {
   SystemMessageFunction,
@@ -77,11 +76,13 @@ import {
   InputProps,
   MessagesProps,
   RenderMessageProps,
+  RenderSuggestionsListProps,
   UserMessageProps,
 } from "./props";
 
 import { HintFunction, runAgent, stopAgent } from "@copilotkit/react-core";
 import { ImageUploadQueue } from "./ImageUploadQueue";
+import { Suggestions as DefaultRenderSuggestionsList } from "./Suggestions";
 
 /**
  * Props for CopilotChat component.
@@ -207,6 +208,11 @@ export interface CopilotChatProps {
   RenderImageMessage?: React.ComponentType<RenderMessageProps>;
 
   /**
+   * A custom suggestions list component to use instead of the default.
+   */
+  RenderSuggestionsList?: React.ComponentType<RenderSuggestionsListProps>;
+
+  /**
    * A custom Input component to use instead of the default.
    */
   Input?: React.ComponentType<InputProps>;
@@ -297,6 +303,7 @@ export function CopilotChat({
   RenderAgentStateMessage = DefaultRenderAgentStateMessage,
   RenderResultMessage = DefaultRenderResultMessage,
   RenderImageMessage = DefaultRenderImageMessage,
+  RenderSuggestionsList = DefaultRenderSuggestionsList,
   Input = DefaultInput,
   className,
   icons,
@@ -484,18 +491,10 @@ export function CopilotChat({
         onThumbsDown={onThumbsDown}
       >
         {currentSuggestions.length > 0 && (
-          <div className="suggestions">
-            {currentSuggestions.map((suggestion, index) => (
-              <Suggestion
-                key={index}
-                title={suggestion.title}
-                message={suggestion.message}
-                partial={suggestion.partial}
-                className={suggestion.className}
-                onClick={(message) => handleSendMessage(message)}
-              />
-            ))}
-          </div>
+          <RenderSuggestionsList
+            onSuggestionClick={handleSendMessage}
+            suggestions={currentSuggestions}
+          />
         )}
       </Messages>
 

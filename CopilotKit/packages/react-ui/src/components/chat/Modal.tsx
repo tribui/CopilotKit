@@ -84,6 +84,7 @@ export const CopilotModal = ({
   onRegenerate,
   className,
   children,
+  ...props
 }: CopilotModalProps) => {
   const [openState, setOpenState] = React.useState(defaultOpen);
 
@@ -104,6 +105,7 @@ export const CopilotModal = ({
         >
           <Header />
           <CopilotChat
+            {...props}
             instructions={instructions}
             onSubmitMessage={onSubmitMessage}
             onStopGeneration={onStopGeneration}
